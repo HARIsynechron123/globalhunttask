@@ -1,0 +1,16 @@
+def lookup_country_codes(country_codes):
+    with open(DATA_FILE, "r") as file:
+        data = json.load(file)
+        country_names = {code: data["data"][code]["name"] for code in country_codes}
+        return country_names
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Country Code Lookup")
+    parser.add_argument("--countryCodes", type=str, nargs='+', help="Country codes for lookup")
+    args = parser.parse_args()
+
+    if args.countryCodes:
+        fetch_data()
+        country_names = lookup_country_codes(args.countryCodes)
+        for code, name in country_names.items():
+            print(f"{code}: {name}")
