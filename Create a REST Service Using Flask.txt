@@ -1,0 +1,28 @@
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+# Load data from the file
+with open(DATA_FILE, "r") as file:
+    data = json.load(file)
+
+@app.route("/health", methods=["GET"])
+def health():
+    return "Service is healthy", 200
+
+@app.route("/diag", methods=["GET"])
+def diag():
+    response = requests.get(API_URL)
+    return jsonify(response.json()), 200
+
+@app.route("/convert", methods=["GET"])
+def convert_country_code():
+    country_code = request.args.get("countryCode")
+    if country_code in data["data"]:
+        country_name = data["data"][country_code]["name"]
+        return country_name, 200
+    else:
+        return "Country code not found", 404
+
+if __name__ == "__main__":
+    app.run(debug=True)
